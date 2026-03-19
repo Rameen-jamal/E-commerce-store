@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { FaPlus, FaArrowRight, FaStar, FaShieldAlt, FaTruck, FaBolt, FaHeadset } from "react-icons/fa";
 import { useCart } from '../../context/CartContext';
-import PageTransition from '../../Components/PageTransition';
+import PageTransition from '../../components/PageTransition';
 
 // ── Real Unsplash images for categories ──────────────────────
 const categories = [

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { FaStar, FaShoppingCart, FaBolt, FaCheck, FaArrowLeft } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
-import PageTransition from '../../Components/PageTransition';
+import PageTransition from '../../components/PageTransition';
 
 const ProductDetail = () => {
     const { id } = useParams();

@@ -10,7 +10,7 @@ import { FaBabyCarriage } from "react-icons/fa";
 import { MdWatch } from "react-icons/md";
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import PageTransition from '../../Components/PageTransition';
+import PageTransition from '../../components/PageTransition';
 
 const categories = [
     { name: "All", icon: null },

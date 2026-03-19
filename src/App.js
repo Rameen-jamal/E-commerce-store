@@ -3,23 +3,23 @@ import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Suspense, lazy } from 'react';
-import Header from './Components/Header';
-import Footer from './Components/Footer';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 
 // Keep your exact import paths
-import Home from './Pages/Home/home';
-import Login from './Pages/login';
-import Register from './Pages/register';
-import Products from './Pages/Products';
-import ProductDetail from './Pages/ProductDetail';
-import Cart from './Pages/Cart';
-import Checkout from './Pages/CheckOut';
-import OrderSuccess from './Pages/OrderSuccess';
-import MyOrders from './Pages/MyOrders';
-import Contact from './Pages/Contact';
-import About from './Pages/About';
+import Home from './pages/Home/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import Products from './pages/Products';
+import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import Checkout from './pages/CheckOut';
+import OrderSuccess from './pages/OrderSuccess';
+import MyOrders from './pages/MyOrders';
+import Contact from './pages/Contact';
+import About from './pages/About';
 
 // AnimatePresence needs useLocation — wrap routes in a child component
 const AnimatedRoutes = () => {
