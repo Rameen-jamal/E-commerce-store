@@ -7,7 +7,7 @@ const {
     getAllOrders,
     updateOrderStatus,
 } = require('../controllers/OrderController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin } = require('../middleware/authmiddleware');
 
 // IMPORTANT: Specific routes PEHLE, dynamic routes BAAD MEIN
 router.post('/', protect, createOrder);                          // POST /api/orders

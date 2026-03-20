@@ -7,7 +7,7 @@ const {
     updateProduct,
     deleteProduct,
 } = require('../controllers/ProductController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin } = require('../middleware/authmiddleware');
 
 // Public routes
 router.get('/', getProducts);           // GET /api/products
