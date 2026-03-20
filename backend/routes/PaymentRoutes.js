@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPaymentIntent } = require('../Controllers/PaymentController');
+const { createPaymentIntent } = require('../controllers/PaymentController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/create-payment-intent', protect, createPaymentIntent);
