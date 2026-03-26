@@ -2,13 +2,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { Suspense, lazy } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-
-// Keep your exact import paths
 import Home from './pages/Home/home';
 import Login from './pages/login';
 import Register from './pages/register';
@@ -60,3 +57,4 @@ function App() {
 }
 
 export default App;
+

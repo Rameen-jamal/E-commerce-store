@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
-import { FaCheckCircle, FaBox, FaTruck, FaHome, FaExclamationCircle, FaCreditCard, FaMoneyBillWave } from 'react-icons/fa';
+import { FaCheckCircle, FaBox, FaTruck, FaHome , FaCreditCard, FaMoneyBillWave } from 'react-icons/fa';
 
 const OrderSuccess = () => {
     const { id } = useParams();
@@ -68,12 +68,12 @@ const OrderSuccess = () => {
                         {isPaid ? (
                             <span className="paidBadge">
                                 <FaCreditCard className="me-2" />
-                                ✅ Payment Received — Card
+                                    Payment Received — Card
                             </span>
                         ) : (
                             <span className="codBadge">
                                 <FaMoneyBillWave className="me-2" />
-                                💵 Cash on Delivery
+                                    Cash on Delivery
                             </span>
                         )}
                     </div>
