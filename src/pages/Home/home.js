@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { FaPlus, FaArrowRight, FaStar, FaShieldAlt, FaTruck, FaBolt, FaHeadset } from "react-icons/fa";
 import { useCart } from '../../context/CartContext';
 import PageTransition from '../../components/PageTransition';
+import api from '../../api';
 
 // ── Real Unsplash images for categories ──────────────────────
 const categories = [
@@ -126,12 +126,33 @@ const Home = () => {
     const heroY = useTransform(scrollY, [0, 600], [0, 120]);
     const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
 
-    useEffect(() => {
-        axios.get('/api/products')
-            .then(res => setProducts(res.data))
-            .catch(console.error)
-            .finally(() => setLoading(false));
+        useEffect(() => {
+        let isMounted = true;
+
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+
+                const { data } = await api.get('/api/products');
+
+                if (isMounted) {
+                    setProducts(data);
+                }
+
+            } catch (err) {
+                console.error('Products load failed:', err);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+
+        fetchProducts();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
+
 
     return (
         <PageTransition>

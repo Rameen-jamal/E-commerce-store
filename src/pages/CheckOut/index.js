@@ -1,11 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import {
+    Elements,
+    CardNumberElement,
+    CardExpiryElement,
+    CardCvcElement,
+    useStripe,
+    useElements
+} from '@stripe/react-stripe-js';
+
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { FaCreditCard, FaMoneyBillWave, FaLock, FaTimes } from 'react-icons/fa';
+
+import {
+    FaCreditCard,
+    FaMoneyBillWave,
+    FaLock,
+    FaTimes
+} from 'react-icons/fa';
+
+import api from '../../api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
@@ -25,30 +40,36 @@ const PaymentModal = ({ onClose, onSuccess, totalPrice }) => {
     const stripe = useStripe();
     const elements = useElements();
     const { user } = useAuth();
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const handlePay = async () => {
         if (!stripe || !elements) return;
+
         setLoading(true);
         setError(null);
 
         try {
-            const { data: intentData } = await axios.post(
+            const { data: intentData } = await api.post(
                 '/api/payment/create-payment-intent',
                 { amount: totalPrice },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-
-            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
-                intentData.clientSecret,
                 {
-                    payment_method: {
-                        card: elements.getElement(CardNumberElement),
-                        billing_details: { name: user.name },
-                    },
+                    headers: {
+                        Authorization: `Bearer ${user.token}`
+                    }
                 }
             );
+
+            const { error: stripeError, paymentIntent } =
+                await stripe.confirmCardPayment(intentData.clientSecret, {
+                    payment_method: {
+                        card: elements.getElement(CardNumberElement),
+                        billing_details: {
+                            name: user.name
+                        },
+                    },
+                });
 
             if (stripeError) {
                 setError(stripeError.message);
@@ -59,6 +80,7 @@ const PaymentModal = ({ onClose, onSuccess, totalPrice }) => {
             onSuccess(paymentIntent);
         } catch (err) {
             setError('Payment failed. Please try again.');
+        } finally {
             setLoading(false);
         }
     };
@@ -161,9 +183,14 @@ const CheckoutForm = () => {
 
     // COD Order
     const handleCODOrder = async () => {
-        if (!user) { navigate('/login'); return; }
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
         setLoading(true);
         setError(null);
+
         try {
             const orderItems = cartItems.map(item => ({
                 product: item._id,
@@ -173,26 +200,34 @@ const CheckoutForm = () => {
                 image: item.images?.[0] || '',
             }));
 
-            const { data } = await axios.post('/api/orders', {
-                orderItems,
-                shippingAddress: shipping,
-                paymentMethod: 'Cash on Delivery',
-                totalPrice,
-            }, { headers: { Authorization: `Bearer ${user.token}` } });
+            const { data } = await api.post(
+                '/api/orders',
+                {
+                    orderItems,
+                    shippingAddress: shipping,
+                    paymentMethod: 'Cash on Delivery',
+                    totalPrice,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`
+                    }
+                }
+            );
 
             orderPlaced.current = true;
             clearCart();
             navigate(`/order/${data._id}`);
         } catch (err) {
-            setError(err.response?.data?.message || 'Order place nahi hua.');
+            setError(err.response?.data?.message || 'Order has not been placed.');
         } finally {
             setLoading(false);
         }
     };
-    // Card Payment Success — modal se aata hai
-    const handlePaymentSuccess = async (paymentIntent) => {
+        const handlePaymentSuccess = async (paymentIntent) => {
         setShowPaymentModal(false);
         setLoading(true);
+
         try {
             const orderItems = cartItems.map(item => ({
                 product: item._id,
@@ -202,27 +237,36 @@ const CheckoutForm = () => {
                 image: item.images?.[0] || '',
             }));
 
-            const { data } = await axios.post('/api/orders', {
-                orderItems,
-                shippingAddress: shipping,
-                paymentMethod: 'Card',
-                totalPrice,
-                paymentResult: {
-                    id: paymentIntent.id,
-                    status: paymentIntent.status,
-                    email: user.email,
+            const { data } = await api.post(
+                '/api/orders',
+                {
+                    orderItems,
+                    shippingAddress: shipping,
+                    paymentMethod: 'Card',
+                    totalPrice,
+                    paymentResult: {
+                        id: paymentIntent.id,
+                        status: paymentIntent.status,
+                        email: user.email,
+                    },
                 },
-            }, { headers: { Authorization: `Bearer ${user.token}` } });
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`
+                    }
+                }
+            );
 
             orderPlaced.current = true;
             clearCart();
             navigate(`/order/${data._id}`);
         } catch (err) {
-            setError('The payment was successful, but the order was not created. Please contact support');
+            setError('Payment successful but order not created.');
         } finally {
             setLoading(false);
         }
     };
+    
 
     const handlePlaceOrder = () => {
         if (paymentMethod === 'Card') {
